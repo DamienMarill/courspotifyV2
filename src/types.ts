@@ -47,6 +47,7 @@ export interface PlaylistEntry {
   name: string
   artist_name: string
   album_name: string
+  cover_small?: string
   duration_ms: number
   explicit: boolean
 }

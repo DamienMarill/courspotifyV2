@@ -128,6 +128,7 @@ export function TrackResult({
                 name: track.title,
                 artist_name: track.artist.name,
                 album_name: track.album.title,
+                cover_small: track.album.cover_small,
                 duration_ms: track.duration * 1000,
                 explicit: track.explicit_lyrics,
               })
