@@ -38,11 +38,6 @@ export function ExportPanel({ entries }: ExportPanelProps) {
   const canGenerate = hasMinimumTracks && !isGenerating
 
   const handleGenerate = async () => {
-    if (!hasMinimumTracks) {
-      setError(`Ajoute au moins ${MIN_EXPORT_TRACKS} musiques avant de générer le JSON.`)
-      return
-    }
-
     setIsGenerating(true)
     setError(null)
     setProcessedTracks(0)
