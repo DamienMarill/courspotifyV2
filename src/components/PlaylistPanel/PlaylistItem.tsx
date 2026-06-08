@@ -52,7 +52,17 @@ export function PlaylistItem({
       >
         ⠿
       </button>
-      <div className="h-14 w-14 rounded bg-slate-100" />
+      {entry.cover_small ? (
+        <img
+          src={entry.cover_small}
+          alt={`Pochette de ${entry.album_name}`}
+          width={56}
+          height={56}
+          className="h-14 w-14 shrink-0 rounded object-cover"
+        />
+      ) : (
+        <div className="h-14 w-14 shrink-0 rounded bg-slate-100" />
+      )}
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold text-slate-900">{entry.name}</p>
         <p className="truncate text-xs text-slate-600">{entry.artist_name}</p>
