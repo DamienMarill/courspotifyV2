@@ -5,8 +5,9 @@ import type {
   DeezerTrackDetail,
 } from '../types'
 
-const API_BASE_URL = 'https://api.deezer.com/2.0'
+const API_BASE_URL = 'https://api.deezer.com'
 const JSONP_TIMEOUT_MS = 10_000
+let jsonpRequestCounter = 0
 
 interface DeezerApiError {
   error: {
@@ -37,8 +38,9 @@ async function fetchDeezer<T>(path: string): Promise<T> {
   }
 
   return new Promise<T>((resolve, reject) => {
-    const callbackName = `deezerJsonp_${Date.now()}_${Math.random().toString(36).slice(2)}`
-    const callbackContainer = window as unknown as Record<string, unknown>
+    jsonpRequestCounter += 1
+    const callbackName = `deezerJsonp_${Date.now()}_${jsonpRequestCounter}_${Math.random().toString(36).slice(2, 8)}`
+    const windowScope = window as typeof window & Record<string, unknown>
     const script = document.createElement('script')
     const timeoutId = window.setTimeout(() => {
       cleanup()
@@ -48,17 +50,17 @@ async function fetchDeezer<T>(path: string): Promise<T> {
     const cleanup = () => {
       window.clearTimeout(timeoutId)
       script.remove()
-      delete callbackContainer[callbackName]
+      delete windowScope[callbackName]
     }
 
-    callbackContainer[callbackName] = (payload: unknown) => {
+    windowScope[callbackName] = (payload: unknown) => {
       cleanup()
 
       if (hasDeezerError(payload)) {
+        const errorCode = payload.error.code ? ` (${payload.error.code})` : ''
+        const errorMessage = payload.error.message ?? 'Unknown error'
         reject(
-          new Error(
-            `Deezer API error${payload.error.code ? ` (${payload.error.code})` : ''}: ${payload.error.message ?? 'Unknown error'}`,
-          ),
+          new Error(`Deezer API error${errorCode}: ${errorMessage}`),
         )
         return
       }
