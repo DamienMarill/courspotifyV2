@@ -19,6 +19,7 @@ interface EnrichedTrack {
 }
 
 const WAIT_BETWEEN_TRACKS_MS = 2000
+const MIN_EXPORT_TRACKS = 30
 
 function wait(durationMs: number): Promise<void> {
   return new Promise((resolve) => {
@@ -33,9 +34,15 @@ export function ExportPanel({ entries }: ExportPanelProps) {
   const [jsonResult, setJsonResult] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
 
-  const canGenerate = entries.length > 0 && !isGenerating
+  const hasMinimumTracks = entries.length >= MIN_EXPORT_TRACKS
+  const canGenerate = hasMinimumTracks && !isGenerating
 
   const handleGenerate = async () => {
+    if (!hasMinimumTracks) {
+      setError(`Ajoute au moins ${MIN_EXPORT_TRACKS} musiques avant de générer le JSON.`)
+      return
+    }
+
     setIsGenerating(true)
     setError(null)
     setProcessedTracks(0)
@@ -131,7 +138,7 @@ export function ExportPanel({ entries }: ExportPanelProps) {
           {jsonResult ? '🔄 Régénérer' : 'Générer le JSON'}
         </button>
 
-        {jsonResult ? (
+        {hasMinimumTracks && jsonResult ? (
           <a
             href={downloadUrl}
             download="tracks.json"
@@ -154,7 +161,13 @@ export function ExportPanel({ entries }: ExportPanelProps) {
 
       {error ? <p className="mt-3 text-sm text-rose-700">{error}</p> : null}
 
-      {jsonResult ? (
+      {!hasMinimumTracks ? (
+        <p className="mt-3 text-sm text-slate-600">
+          Il faut au moins {MIN_EXPORT_TRACKS} musiques dans la playlist pour générer le JSON.
+        </p>
+      ) : null}
+
+      {hasMinimumTracks && jsonResult ? (
         <pre className="mt-3 max-h-96 overflow-auto rounded-md bg-slate-900 p-3 text-xs text-slate-100">
           <code>{jsonResult}</code>
         </pre>
