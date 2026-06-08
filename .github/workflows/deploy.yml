@@ -29,13 +29,22 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build
+      - id: pages
+        uses: actions/configure-pages@v4
+        continue-on-error: true
 
-      - uses: actions/configure-pages@v4
+      - run: npm run build
+        env:
+          VITE_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      - if: steps.pages.outcome != 'success'
+        run: echo "::warning::GitHub Pages n'est pas activé pour ce dépôt. Le build a réussi, mais le déploiement est ignoré tant que Pages n'est pas configuré avec GitHub Actions."
 
       - uses: actions/upload-pages-artifact@v3
+        if: steps.pages.outcome == 'success'
         with:
           path: './dist'
 
       - uses: actions/deploy-pages@v4
         id: deployment
+        if: steps.pages.outcome == 'success'
