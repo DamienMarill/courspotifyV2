@@ -109,7 +109,7 @@ export function TrackResult({
           aria-label={isPlaying ? 'Mettre en pause l’extrait' : 'Lire l’extrait'}
           title={!hasPreview ? 'Aucun extrait disponible' : undefined}
         >
-          {isPlaying ? '⏸️ Pause' : '▶️ Play'}
+          {isPlaying ? '⏸️ Pause' : '▶️ Lecture'}
         </button>
         {isInPlaylist ? (
           <span className="rounded-md bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700">
