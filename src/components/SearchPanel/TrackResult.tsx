@@ -104,9 +104,7 @@ export function TrackResult({
         <button
           type="button"
           className="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
-          onClick={() => {
-            void handleTogglePlayback()
-          }}
+          onClick={handleTogglePlayback}
           disabled={!hasPreview}
           aria-label={isPlaying ? 'Mettre en pause l’extrait' : 'Lire l’extrait'}
           title={!hasPreview ? 'Aucun extrait disponible' : undefined}
