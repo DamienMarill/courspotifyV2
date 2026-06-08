@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { CSS } from '@dnd-kit/utilities'
 import { useSortable } from '@dnd-kit/sortable'
 import type { PlaylistEntry } from '../../types'
@@ -28,6 +29,7 @@ export function PlaylistItem({
   onMoveDown,
   onRemove,
 }: PlaylistItemProps) {
+  const [coverError, setCoverError] = useState(false)
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: entry.deezer_id,
   })
@@ -52,13 +54,14 @@ export function PlaylistItem({
       >
         ⠿
       </button>
-      {entry.cover_small ? (
+      {entry.cover_small && !coverError ? (
         <img
           src={entry.cover_small}
           alt={`Pochette de ${entry.album_name}`}
           width={56}
           height={56}
           className="h-14 w-14 shrink-0 rounded object-cover"
+          onError={() => setCoverError(true)}
         />
       ) : (
         <div className="h-14 w-14 shrink-0 rounded bg-slate-100" />
