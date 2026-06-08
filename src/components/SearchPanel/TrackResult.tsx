@@ -70,7 +70,8 @@ export function TrackResult({
     if (currentAudio.paused) {
       try {
         await currentAudio.play()
-      } catch {
+      } catch (error) {
+        console.error('Impossible de lancer la lecture de l’extrait.', error)
         setIsPlaying(false)
       }
       return
